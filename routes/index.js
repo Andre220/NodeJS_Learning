@@ -1,19 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res) {
-  global.db.findAll((e, docs) =>{
-   if(e) {return console.log(e); }
-   res.render('./index', {title: 'lista de clientes', docs : docs});
-  })
-});
-
 router.get('/new', function(req, res, next ) {
   //A linha abaixo define o modelo, passando informacoes que serao utilizadas pela view
   res.render('new', {title: 'Novo Cadastro', doc: {"nome":"", "idade":""}, action: '/new'});
-});
-
-router.post('/new', function(req, res) {
+  });
+  router.post('/new', function(req, res) {
   var nome = req.body.nome;
   var idade = parseInt(req.body.idade);
   var uf = req.body.uf;
@@ -53,5 +45,12 @@ router.get('/delete/:id', function(req, res) {
     });
 });
 
+router.get('/:pagina?', async function(req, res) {
+  const pagina = parseInt(req.params.pagina || "1");
+  const docs = await global.db.findAll(pagina);
+  const count = await global.db.countAll();
+  const qtdPaginas = Math.ceil(count/ global.db.pagina_size);
+  res.render('./index', {title: 'lista de clientes', docs, count, qtdPaginas, pagina});
+});
 
 module.exports = router;

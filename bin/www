@@ -4,36 +4,20 @@
  * Module dependencies.
  */
 
+ //Define uma instância global do banco de dados, que pode ser acessada por toda a aplicação.
 global.db = require('../db');
 var app = require('../app');
 var debug = require('debug')('nodejs-learning:server');
 var http = require('http');
 
-
-/**
- * Get port from environment and store in Express.
- */
-
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
+server.on('error', onError); //define a função de callback para o evento de erro 
+server.on('listening', onListening); //define a função de callback para o evento de escutar a porta
 
 function normalizePort(val) {
   var port = parseInt(val, 10);

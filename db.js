@@ -6,8 +6,15 @@ mongoClient.connect(URI, {useUnifiedTopology: true})
             .then(conn => global.conn = conn.db("local"))
             .catch(err => console.log(err))
 
-function findAll(callback){
-    global.conn.collection("customers").find({}).toArray(callback);
+const pagina_size = 10;
+
+function findAll(pagina){
+    const qtdPular = pagina_size * (pagina - 1);
+    return global.conn.collection("customers")
+            .find({})
+            .skip(qtdPular)
+            .limit(pagina_size)
+            .toArray();
 } 
 
 function insertCustomer(customer,callback){
@@ -27,4 +34,8 @@ function deleteCustomer(id, callback){
     global.conn.collection("customers").deleteOne({_id: new ObjectId(id)}, callback);
 } 
 
-module.exports = { findAll, insertCustomer, findCustomer, updateCustomer, deleteCustomer }
+function countAll(){
+    return global.conn.collection("customers").countDocuments();
+} 
+
+module.exports = { findAll, insertCustomer, findCustomer, updateCustomer, deleteCustomer, pagina_size, countAll }
